@@ -49,74 +49,74 @@
         generateQuantityOptions();
 
         function calculerMontant() {
-            var longueur = parseInt(document.getElementById('longueur').value);
-            var largeur = parseInt(document.getElementById('largeur').value);
-            var hauteur = parseInt(document.getElementById('hauteur').value);
+            // Récupérer les valeurs des champs existants (longueur, largeur, hauteur, quantité)
+            var longueur = parseFloat(document.getElementById('longueur').value) / 1000;
+            var largeur = parseFloat(document.getElementById('largeur').value) / 1000;
+            var hauteur = parseFloat(document.getElementById('hauteur').value) / 1000;
             var quantity = parseInt(document.getElementById('quantity').value);
-            var avecPieds = document.getElementById('avecPieds').checked;
-            var avecRoulettes = document.getElementById('avecRoulettes').checked;
 
-            // Calcul du prix en fonction des dimensions et des options choisies
-            var prixBase = 10; // Prix de base
-            var prixAvecPieds = avecPieds ? 10 : 0; // Ajouter 10 euros si avecPieds est coché
-            var prixAvecRoulettes = avecRoulettes ? 90 : 0; // Ajouter 90 euros si avecRoulettes est coché
+            // Calculer le montant en fonction des valeurs saisies
+            var surface = (longueur * largeur) * 3 + (largeur * hauteur) * 2;
+            var poids = surface * 16;
+            var prix = poids * 13;
 
-            // Calcul du volume en mm³
-            var volume = longueur * largeur * hauteur;
+            if (document.getElementById('avecPieds').checked) {
+                prix += 10 * quantity;
+            }
+            if (document.getElementById('avecRoulettes').checked) {
+                prix += 90 * quantity;
+            }
 
-            // Calcul du montant total
-            var montantTotal = (prixBase + prixAvecPieds + prixAvecRoulettes) * quantity;
+            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
 
-            // Affichage du montant total
-            document.getElementById('result').innerText = 'Montant total : ' + montantTotal + ' euros';
+            // Affichez le bouton de paiement si le montant est valide
+            if (prix > 0) {
+                document.getElementById('checkout-button').style.display = 'block';
+            } else {
+                document.getElementById('checkout-button').style.display = 'none';
+            }
         }
 
         function checkboxClicked(clickedCheckbox) {
-            // Votre logique de gestion des cases à cocher ici
+            if (clickedCheckbox.id === 'avecPieds' && clickedCheckbox.checked) {
+                document.getElementById('avecRoulettes').checked = false;
+            } else if (clickedCheckbox.id === 'avecRoulettes' && clickedCheckbox.checked) {
+                document.getElementById('avecPieds').checked = false;
+            }
         }
 
         // Créez un gestionnaire d'événements pour le clic sur le bouton de paiement
         document.getElementById('checkout-button').addEventListener('click', function() {
-            // Votre logique de création de session de paiement avec Stripe ici
+            // Récupérez le montant à payer
+            var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim()) * 100; // Convertir en centimes
 
-            // Récupérez les valeurs du formulaire
-            var longueur = document.getElementById('longueur').value;
-            var largeur = document.getElementById('largeur').value;
-            var hauteur = document.getElementById('hauteur').value;
-            var quantity = document.getElementById('quantity').value;
-            var avecPieds = document.getElementById('avecPieds').checked;
-            var avecRoulettes = document.getElementById('avecRoulettes').checked;
-            var prix = document.getElementById('result').innerText.split(':')[1].trim();
-
-            // Envoie des données au backend pour l'envoi d'e-mail
-            fetch('/send-email', {
+            // Créez une session de paiement avec Stripe
+            fetch('/create-checkout-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    longueur: longueur,
-                    largeur: largeur,
-                    hauteur: hauteur,
-                    quantity: quantity,
-                    avecPieds: avecPieds,
-                    avecRoulettes: avecRoulettes,
-                    prix: prix
+                    montant: montant
                 })
             })
             .then(function(response) {
-                if (response.ok) {
-                    console.log('E-mail envoyé avec succès !');
-                } else {
-                    console.error('Erreur lors de l\'envoi de l\'e-mail');
+                return response.json();
+            })
+            .then(function(session) {
+                // Redirigez l'utilisateur vers la page de paiement Stripe
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function(result) {
+                // Gérez la réponse de Stripe après le paiement
+                if (result.error) {
+                    console.error(result.error.message);
+                    // Afficher un message d'erreur à l'utilisateur en cas d'échec du paiement
                 }
             })
             .catch(function(error) {
-                console.error('Erreur lors de l\'envoi de l\'e-mail:', error);
+                console.error('Error:', error);
             });
-
-            // Redirection vers la page de paiement Stripe
-            stripe.redirectToCheckout({ sessionId: session.id });
         });
     </script>
 </body>
