@@ -17,8 +17,6 @@
         <input type="number" id="hauteur" min="0" value="200">
         <label for="quantity">Quantité :</label>
         <select id="quantity"></select>
-        <label for="adresse">Adresse de livraison :</label>
-        <input type="text" id="adresse" placeholder="Votre adresse de livraison">
         <label>
             <input type="checkbox" id="avecPieds" onclick="checkboxClicked(this)">
             Avec pieds 10 cm : + 10 euros TTC
@@ -69,9 +67,7 @@
                 prix += 90 * quantity;
             }
 
-            var montant = (prix * quantity).toFixed(2); // Montant total
-
-            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + montant + " euros";
+            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
 
             // Affichez le bouton de paiement si le montant est valide
             if (prix > 0) {
@@ -101,8 +97,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    montant: montant,
-                    adresseLivraison: document.getElementById('adresse').value
+                    montant: montant
                 })
             })
             .then(function(response) {
@@ -126,3 +121,4 @@
     </script>
 </body>
 </html>
+
