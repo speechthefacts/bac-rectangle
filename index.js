@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
-const stripe = require('stripe')('YOUR_STRIPE_SECRET_KEY');
+const stripe = require('stripe')('sk_test_51OVBbFH0S2ts1MYe41bcBxWgthbhitxF0cr1gxtlGjfEF48HIUMC3RtrtTAvQcuaBxdAIWe0fSsRxMtA29sy16hS00aiDfmOJ1');
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 // Route pour servir votre page HTML
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'test.html'));
 });
 
 // Route pour le traitement des paiements avec Stripe
