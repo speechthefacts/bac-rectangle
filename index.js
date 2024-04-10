@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
 const stripe = require('stripe')('sk_test_51OVBbFH0S2ts1MYetfq0WBHoT1IsqtvZyq89CxNLVnK1yDq2rwSbIxqqEcfQ37qoSNi4yKDC8tLHPttJXiRnkt2v004uFHTjW5');
-const ElasticEmail = require('elasticemail');
+const ElasticEmail = require('elastic-email');
 
 // Initialiser Elastic Email avec la clé API
 const elasticemail = new ElasticEmail('E18860258D539A9C5890BAD766D4FB74481D6E3AAAA2A5ABAA56A57C864660B7503305DC13631A0E40AB69EE38073A21');
