@@ -90,34 +90,10 @@
             // Récupérez le montant à payer
             var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim()) * 100; // Convertir en centimes
 
-            // Créez une session de paiement avec Stripe
-            fetch('/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    montant: montant
-                })
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(session) {
-                // Redirigez l'utilisateur vers la page de paiement Stripe en utilisant l'ID de session
-                return stripe.redirectToCheckout({ sessionId: session.sessionId });
-            })
-            .then(function(result) {
-                // Gérez la réponse de Stripe après le paiement
-                if (result.error) {
-                    console.error(result.error.message);
-                    // Afficher un message d'erreur à l'utilisateur en cas d'échec du paiement
-                }
-            })
-            .catch(function(error) {
-                console.error('Error:', error);
-            });
+            // Redirection vers la page de paiement Stripe
+            stripe.redirectToCheckout({ sessionId: montant });
         });
     </script>
 </body>
 </html>
+
