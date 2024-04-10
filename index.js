@@ -35,7 +35,7 @@ app.post('/create-checkout-session', async (req, res) => {
             cancel_url: 'https://a-scoria.fr/cancel-payement',
         });
 
-        res.json({ sessionId: session.id }); // Envoyer l'ID de la session
+        res.json({ id: session.id });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -46,4 +46,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
