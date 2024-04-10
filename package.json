@@ -9,10 +9,10 @@
   "dependencies": {
     "express": "^4.19.2",
     "stripe": "^14.24.0",
-    "body-parser": "^1.20.2",
-    "elastic-email": "^1.0.4"
+    "body-parser": "^1.20.2"
   },
   "engines": {
     "node": "12.x"
   }
 }
+
