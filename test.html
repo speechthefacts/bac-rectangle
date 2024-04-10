@@ -91,7 +91,7 @@
             var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim()) * 100; // Convertir en centimes
 
             // Redirection vers la page de paiement Stripe
-            stripe.redirectToCheckout({ sessionId: montant });
+            stripe.redirectToCheckout({ sessionId: montant.toString() });
         });
     </script>
 </body>
