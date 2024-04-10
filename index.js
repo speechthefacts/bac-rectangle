@@ -32,14 +32,14 @@ app.post('/create-checkout-session', async (req, res) => {
             ],
             mode: 'payment',
             success_url: 'https://a-scoria.fr/success-payement', // URL de redirection après un paiement réussi
-            cancel_url: 'https://a-scoria.fr/cancel-payement' // URL de redirection après l'annulation du paiement
+            cancel_url: 'https://a-scoria.fr/cancel-payement', // URL de redirection après l'annulation du paiement
             shipping_address_collection: {
-                allowed_countries: ['FR'], // Définissez les pays autorisés pour l'adresse de livraison
+                allowed_countries: ['FR'] // Définissez les pays autorisés pour l'adresse de livraison
             },
             shipping: {
                 address: {
-                    line1: req.body.adresseLivraison, // Utilisez l'adresse de livraison fournie dans la requête
-                },
+                    line1: req.body.adresseLivraison // Utilisez l'adresse de livraison fournie dans la requête
+                }
             },
         });
         res.json({ id: session.id });
