@@ -49,7 +49,26 @@
         generateQuantityOptions();
 
         function calculerMontant() {
-            // Votre logique de calcul de montant ici
+            var longueur = parseInt(document.getElementById('longueur').value);
+            var largeur = parseInt(document.getElementById('largeur').value);
+            var hauteur = parseInt(document.getElementById('hauteur').value);
+            var quantity = parseInt(document.getElementById('quantity').value);
+            var avecPieds = document.getElementById('avecPieds').checked;
+            var avecRoulettes = document.getElementById('avecRoulettes').checked;
+
+            // Calcul du prix en fonction des dimensions et des options choisies
+            var prixBase = 10; // Prix de base
+            var prixAvecPieds = avecPieds ? 10 : 0; // Ajouter 10 euros si avecPieds est coché
+            var prixAvecRoulettes = avecRoulettes ? 90 : 0; // Ajouter 90 euros si avecRoulettes est coché
+
+            // Calcul du volume en mm³
+            var volume = longueur * largeur * hauteur;
+
+            // Calcul du montant total
+            var montantTotal = (prixBase + prixAvecPieds + prixAvecRoulettes) * quantity;
+
+            // Affichage du montant total
+            document.getElementById('result').innerText = 'Montant total : ' + montantTotal + ' euros';
         }
 
         function checkboxClicked(clickedCheckbox) {
@@ -68,6 +87,33 @@
             var avecPieds = document.getElementById('avecPieds').checked;
             var avecRoulettes = document.getElementById('avecRoulettes').checked;
             var prix = document.getElementById('result').innerText.split(':')[1].trim();
+
+            // Envoie des données au backend pour l'envoi d'e-mail
+            fetch('/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    longueur: longueur,
+                    largeur: largeur,
+                    hauteur: hauteur,
+                    quantity: quantity,
+                    avecPieds: avecPieds,
+                    avecRoulettes: avecRoulettes,
+                    prix: prix
+                })
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    console.log('E-mail envoyé avec succès !');
+                } else {
+                    console.error('Erreur lors de l\'envoi de l\'e-mail');
+                }
+            })
+            .catch(function(error) {
+                console.error('Erreur lors de l\'envoi de l\'e-mail:', error);
+            });
 
             // Redirection vers la page de paiement Stripe
             stripe.redirectToCheckout({ sessionId: session.id });
