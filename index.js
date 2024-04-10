@@ -16,7 +16,28 @@ app.get('/', (req, res) => {
 // Route pour le traitement des paiements avec Stripe
 app.post('/create-checkout-session', async (req, res) => {
     try {
-        // Votre logique de création de session de paiement avec Stripe
+        const { montant } = req.body;
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'eur',
+                        product_data: {
+                            name: 'Bacs à fleurs',
+                        },
+                        unit_amount: montant,
+                    },
+                    quantity: 1,
+                },
+            ],
+            mode: 'payment',
+            success_url: 'https://example.com/success',
+            cancel_url: 'https://example.com/cancel',
+        });
+
+        res.json({ id: session.id });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -27,4 +48,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
