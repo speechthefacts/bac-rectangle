@@ -17,6 +17,8 @@
         <input type="number" id="hauteur" min="0" value="200">
         <label for="quantity">Quantité :</label>
         <select id="quantity"></select>
+        <label for="adresse">Adresse de livraison :</label>
+        <input type="text" id="adresse" placeholder="Votre adresse de livraison">
         <label>
             <input type="checkbox" id="avecPieds" onclick="checkboxClicked(this)">
             Avec pieds 10 cm : + 10 euros TTC
@@ -49,33 +51,45 @@
         generateQuantityOptions();
 
         function calculerMontant() {
+            // Récupérer les valeurs des champs existants (longueur, largeur, hauteur, quantité)
             var longueur = parseFloat(document.getElementById('longueur').value) / 1000;
             var largeur = parseFloat(document.getElementById('largeur').value) / 1000;
             var hauteur = parseFloat(document.getElementById('hauteur').value) / 1000;
-
-            var surface = (longueur * largeur) * 3 + (largeur * hauteur) * 2;
-
-            var poids = surface * 16;
-
-            var prix = poids * 13;
-
             var quantity = parseInt(document.getElementById('quantity').value);
 
-            if (document.getElementById('avecPieds').checked) {
-                prix += 10 * quantity;
-            }
-            if (document.getElementById('avecRoulettes').checked) {
-                prix += 90 * quantity;
-            }
+            // Calculer le montant en fonction des valeurs saisies
 
-            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
+            // Récupérer l'adresse de livraison
+            var adresseLivraison = document.getElementById('adresse').value;
 
-            // Affichez le bouton de paiement si le montant est valide
-            if (prix > 0) {
-                document.getElementById('checkout-button').style.display = 'block';
-            } else {
-                document.getElementById('checkout-button').style.display = 'none';
-            }
+            // Créer une session de paiement avec Stripe et inclure l'adresse de livraison
+            fetch('/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    montant: montant,
+                    adresseLivraison: adresseLivraison
+                })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(session) {
+                // Rediriger l'utilisateur vers la page de paiement Stripe
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function(result) {
+                // Gérer la réponse de Stripe après le paiement
+                if (result.error) {
+                    console.error(result.error.message);
+                    // Afficher un message d'erreur à l'utilisateur en cas d'échec du paiement
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
         }
 
         function checkboxClicked(clickedCheckbox) {
