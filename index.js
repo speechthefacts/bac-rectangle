@@ -16,8 +16,6 @@ app.get('/', (req, res) => {
 // Route pour le traitement des paiements avec Stripe
 app.post('/create-checkout-session', async (req, res) => {
     try {
-        const { montant } = req.body;
-
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [
@@ -25,16 +23,16 @@ app.post('/create-checkout-session', async (req, res) => {
                     price_data: {
                         currency: 'eur',
                         product_data: {
-                            name: 'Bacs à fleurs',
+                            name: 'Bac à fleurs',
                         },
-                        unit_amount: montant,
+                        unit_amount: req.body.montant,
                     },
                     quantity: 1,
                 },
             ],
             mode: 'payment',
-            success_url: 'https://example.com/success',
-            cancel_url: 'https://example.com/cancel',
+            success_url: 'https://a-scoria.fr/success-payement',
+            cancel_url: 'https://a-scoria.fr/cancel-payement',
         });
 
         res.json({ id: session.id });
