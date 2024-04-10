@@ -49,33 +49,38 @@
         generateQuantityOptions();
 
         function calculerMontant() {
-            // Récupérer les valeurs des champs existants (longueur, largeur, hauteur, quantité)
-            var longueur = parseFloat(document.getElementById('longueur').value) / 1000;
-            var largeur = parseFloat(document.getElementById('largeur').value) / 1000;
-            var hauteur = parseFloat(document.getElementById('hauteur').value) / 1000;
-            var quantity = parseInt(document.getElementById('quantity').value);
+    // Récupérer les valeurs des champs existants (longueur, largeur, hauteur, quantité)
+    var longueur = parseFloat(document.getElementById('longueur').value) / 1000;
+    var largeur = parseFloat(document.getElementById('largeur').value) / 1000;
+    var hauteur = parseFloat(document.getElementById('hauteur').value) / 1000;
+    var quantity = parseInt(document.getElementById('quantity').value);
 
-            // Calculer le montant en fonction des valeurs saisies
-            var surface = (longueur * largeur) * 3 + (largeur * hauteur) * 2;
-            var poids = surface * 16;
-            var prix = poids * 13;
+    // Calculer le montant en fonction des valeurs saisies
+    var surface = (longueur * largeur) * 3 + (largeur * hauteur) * 2;
+    var poids = surface * 16;
+    var prix = poids * 13;
 
-            if (document.getElementById('avecPieds').checked) {
-                prix += 10 * quantity;
-            }
-            if (document.getElementById('avecRoulettes').checked) {
-                prix += 90 * quantity;
-            }
+    if (document.getElementById('avecPieds').checked) {
+        prix += 10 * quantity;
+    }
+    if (document.getElementById('avecRoulettes').checked) {
+        prix += 90 * quantity;
+    }
 
-            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
+    var montantEnCentimes = prix * quantity * 100; // Convertir en centimes
 
-            // Affichez le bouton de paiement si le montant est valide
-            if (prix > 0) {
-                document.getElementById('checkout-button').style.display = 'block';
-            } else {
-                document.getElementById('checkout-button').style.display = 'none';
-            }
-        }
+    document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
+
+    // Affichez le bouton de paiement si le montant est valide
+    if (prix > 0) {
+        document.getElementById('checkout-button').style.display = 'block';
+    } else {
+        document.getElementById('checkout-button').style.display = 'none';
+    }
+
+    return montantEnCentimes;
+}
+
 
         function checkboxClicked(clickedCheckbox) {
             if (clickedCheckbox.id === 'avecPieds' && clickedCheckbox.checked) {
