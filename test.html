@@ -69,7 +69,9 @@
                 prix += 90 * quantity;
             }
 
-            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
+            var montant = (prix * quantity).toFixed(2); // Montant total
+
+            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + montant + " euros";
 
             // Affichez le bouton de paiement si le montant est valide
             if (prix > 0) {
