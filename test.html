@@ -69,38 +69,9 @@
             var avecRoulettes = document.getElementById('avecRoulettes').checked;
             var prix = document.getElementById('result').innerText.split(':')[1].trim();
 
-            // Envoie des données au backend pour l'envoi d'e-mail
-            fetch('/send-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    longueur: longueur,
-                    largeur: largeur,
-                    hauteur: hauteur,
-                    quantity: quantity,
-                    avecPieds: avecPieds,
-                    avecRoulettes: avecRoulettes,
-                    prix: prix
-                })
-            })
-            .then(function(response) {
-                if (response.ok) {
-                    console.log('E-mail envoyé avec succès !');
-                } else {
-                    console.error('Erreur lors de l\'envoi de l\'e-mail');
-                }
-            })
-            .catch(function(error) {
-                console.error('Erreur lors de l\'envoi de l\'e-mail:', error);
-            });
-
             // Redirection vers la page de paiement Stripe
             stripe.redirectToCheckout({ sessionId: session.id });
         });
     </script>
 </body>
 </html>
-
-
