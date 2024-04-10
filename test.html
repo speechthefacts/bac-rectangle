@@ -88,7 +88,8 @@
         // Créez un gestionnaire d'événements pour le clic sur le bouton de paiement
         document.getElementById('checkout-button').addEventListener('click', function() {
             // Récupérez le montant à payer
-            var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim()) * 100; // Convertir en centimes
+            var montantString = document.getElementById('result').innerText.match(/(\d+\.\d{2})/)[0];
+            var montant = parseFloat(montantString) * 100; // Convertir en centimes
 
             // Créez une session de paiement avec Stripe
             fetch('/create-checkout-session', {
