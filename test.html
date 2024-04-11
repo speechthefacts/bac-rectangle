@@ -5,6 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paiement avec Stripe</title>
     <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        select {
+            width: 120px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block; /* Alignement avec les autres éléments */
+        }
+        button:hover {
+            background-color: #9932cc;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        #checkout-button {
+            display: none; /* Masquer initialement le bouton de paiement */
+            margin-top: 20px; /* Ajout d'une marge en haut pour l'espacement */
+        }
+    </style>
 </head>
 <body>
     <div id="pricing-form">
@@ -121,3 +176,4 @@
     </script>
 </body>
 </html>
+
