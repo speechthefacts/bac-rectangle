@@ -1,4 +1,9 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer-master/PHPMailer-master/PHPMailerAutoload.php';
+
 // Récupérez les données envoyées par la requête AJAX
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -22,9 +27,34 @@ $message .= "Montant : " . $montant . " euros\n";
 $message .= "Avec pieds : " . ($avecPieds ? "Oui" : "Non") . "\n";
 $message .= "Avec roulettes : " . ($avecRoulettes ? "Oui" : "Non") . "\n";
 
-// Envoyez l'e-mail (vous devrez peut-être configurer les paramètres SMTP)
-if (mail($to, $subject, $message)) {
+// Créer une nouvelle instance de PHPMailer
+$mail = new PHPMailer(true);
+
+try {
+    // Configuration du serveur SMTP
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com'; // Remplacez par l'hôte SMTP
+    $mail->SMTPAuth = true;
+    $mail->Username = 'capitainecedric63@gmail.com'; // Remplacez par votre adresse e-mail
+    $mail->Password = 'Anthonys1'; // Remplacez par votre mot de passe
+    $mail->SMTPSecure = 'tls';
+    $mail->Port = 587;
+
+    // Destinataire et expéditeur
+    $mail->setFrom('capitainecedric63@gmail.com', 'A-scoria');
+    $mail->addAddress($to);
+    
+    // Contenu du message
+    $mail->isHTML(false);
+    $mail->Subject = $subject;
+    $mail->Body = $message;
+
+    // Envoyer l'e-mail
+    $mail->send();
+    
     http_response_code(200); // Envoi de l'e-mail réussi
-} else {
+} catch (Exception $e) {
+    echo 'Erreur lors de l\'envoi de l\'e-mail : ' . $mail->ErrorInfo;
     http_response_code(500); // Erreur lors de l'envoi de l'e-mail
 }
+?>
