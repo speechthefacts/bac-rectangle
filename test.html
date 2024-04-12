@@ -148,38 +148,79 @@
 
         // Créez un gestionnaire d'événements pour le clic sur le bouton de paiement
         document.getElementById('checkout-button').addEventListener('click', function() {
-            // Récupérez le montant à payer
-            var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim()) * 100; // Convertir en centimes
+            // Récupérez les valeurs saisies par l'utilisateur
+            var longueur = document.getElementById('longueur').value;
+            var largeur = document.getElementById('largeur').value;
+            var hauteur = document.getElementById('hauteur').value;
+            var quantity = document.getElementById('quantity').value;
+            var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim());
+            var avecPieds = document.getElementById('avecPieds').checked;
+            var avecRoulettes = document.getElementById('avecRoulettes').checked;
 
-            // Créez une session de paiement avec Stripe
-            fetch('/create-checkout-session', {
+            // Envoyez une requête AJAX pour envoyer l'e-mail
+            fetch('/send-email.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    montant: montant
-                })
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(session) {
-                // Redirigez l'utilisateur vers la page de paiement Stripe
-                return stripe.redirectToCheckout({ sessionId: session.id });
-            })
-            .then(function(result) {
-                // Gérez la réponse de Stripe après le paiement
-                if (result.error) {
-                    console.error(result.error.message);
-                    // Afficher un message d'erreur à l'utilisateur en cas d'échec du paiement
-                }
-            })
-            .catch(function(error) {
-                console.error('Error:', error);
-            });
-        });
-    </script>
+                    longueur: longueur,
+                    largeur: largeur,
+                    hauteur: hauteur,
+        quantity: quantity,
+        montant: montant,
+        avecPieds: avecPieds,
+        avecRoulettes: avecRoulettes
+    })
+})
+.then(function(response) {
+    // Gérez la réponse du script côté serveur
+    if (response.ok) {
+        // L'e-mail a été envoyé avec succès, continuez avec le paiement Stripe
+        createCheckoutSession(montant);
+    } else {
+        // Une erreur s'est produite lors de l'envoi de l'e-mail
+        console.error('Erreur lors de l'envoi de l'e-mail.');
+    }
+})
+.catch(function(error) {
+    console.error('Error:', error);
+});
+});
+
+function createCheckoutSession(montant) {
+    // Convertir le montant en centimes
+    montant = montant * 100;
+
+    // Créez une session de paiement avec Stripe
+    fetch('/create-checkout-session', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            montant: montant
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(session) {
+        // Redirigez l'utilisateur vers la page de paiement Stripe
+        return stripe.redirectToCheckout({ sessionId: session.id });
+    })
+    .then(function(result) {
+        // Gérez la réponse de Stripe après le paiement
+        if (result.error) {
+            console.error(result.error.message);
+            // Afficher un message d'erreur à l'utilisateur en cas d'échec du paiement
+        }
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+    });
+}
+</script>
 </body>
 </html>
 
