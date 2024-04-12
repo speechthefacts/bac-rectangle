@@ -158,7 +158,13 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    montant: montant
+                    montant: montant,
+                    longueur: parseFloat(document.getElementById('longueur').value),
+                    largeur: parseFloat(document.getElementById('largeur').value),
+                    hauteur: parseFloat(document.getElementById('hauteur').value),
+                    quantity: parseInt(document.getElementById('quantity').value),
+                    avecPieds: document.getElementById('avecPieds').checked,
+                    avecRoulettes: document.getElementById('avecRoulettes').checked
                 })
             })
             .then(function(response) {
