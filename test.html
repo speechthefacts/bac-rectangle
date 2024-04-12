@@ -80,7 +80,7 @@
             <input type="checkbox" id="avecRoulettes" onclick="checkboxClicked(this)">
             Avec roulettes : + 90 euros TTC
         </label>
-        <button id="calculate-button">Calculer Montant</button>
+        <button id="calculate-button" onclick="createCheckoutSession()">Calculer Montant</button>
         <div id="result"></div>
         <button id="checkout-button" style="display: none;">Payer maintenant</button>
     </div>
@@ -143,11 +143,7 @@
             }
         }
 
-        document.getElementById('calculate-button').addEventListener('click', function() {
-            calculerMontant();
-        });
-
-        document.getElementById('checkout-button').addEventListener('click', function() {
+        function createCheckoutSession() {
             var longueur = document.getElementById('longueur').value;
             var largeur = document.getElementById('largeur').value;
             var hauteur = document.getElementById('hauteur').value;
@@ -156,11 +152,6 @@
             var avecPieds = document.getElementById('avecPieds').checked;
             var avecRoulettes = document.getElementById('avecRoulettes').checked;
 
-            createCheckoutSession(montant, longueur, largeur, hauteur, quantity, avecPieds, avecRoulettes);
-        });
-
-        function createCheckoutSession(montant, longueur, largeur, hauteur, quantity, avecPieds, avecRoulettes) {
-            montant = montant * 100;
             fetch('/create-checkout-session', {
                 method: 'POST',
                 headers: {
@@ -179,13 +170,9 @@
             .then(function(response) {
                 return response.json();
             })
-            .then(function(session) {
-                return stripe.redirectToCheckout({ sessionId: session.id });
-            })
-            .then(function(result) {
-                if (result.error) {
-                    console.error(result.error.message);
-                }
+            .then(function(data) {
+                // Rediriger vers la page de paiement Stripe
+                window.location.href = data.redirectUrl;
             })
             .catch(function(error) {
                 console.error('Error:', error);
@@ -194,4 +181,5 @@
     </script>
 </body>
 </html>
+
 
