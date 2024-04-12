@@ -143,45 +143,45 @@
             }
         }
 
-       function createCheckoutSession() {
-    var longueur = document.getElementById('longueur').value;
-    var largeur = document.getElementById('largeur').value;
-    var hauteur = document.getElementById('hauteur').value;
-    var quantity = document.getElementById('quantity').value;
-    var montantElement = document.getElementById('result').innerText.split(':')[1];
-    var montant = montantElement ? parseFloat(montantElement.trim()) : 0;
-    var avecPieds = document.getElementById('avecPieds').checked;
-    var avecRoulettes = document.getElementById('avecRoulettes').checked;
+        function createCheckoutSession() {
+            var longueur = document.getElementById('longueur').value;
+            var largeur = document.getElementById('largeur').value;
+            var hauteur = document.getElementById('hauteur').value;
+            var quantity = document.getElementById('quantity').value;
+            var montantElement = document.getElementById('result').innerText.split(':')[1];
+            var montant = montantElement ? parseFloat(montantElement.trim()) : 0;
+            var avecPieds = document.getElementById('avecPieds').checked;
+            var avecRoulettes = document.getElementById('avecRoulettes').checked;
 
-    fetch('/create-checkout-session', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            montant: montant,
-            longueur: longueur,
-            largeur: largeur,
-            hauteur: hauteur,
-            quantity: quantity,
-            avecPieds: avecPieds,
-            avecRoulettes: avecRoulettes
-        })
-    })
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(data) {
-        // Rediriger vers la page de paiement Stripe
-        window.location.href = data.redirectUrl;
-    })
-    .catch(function(error) {
-        console.error('Error:', error);
-    });
-}
-
+            fetch('/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    montant: montant,
+                    longueur: longueur,
+                    largeur: largeur,
+                    hauteur: hauteur,
+                    quantity: quantity,
+                    avecPieds: avecPieds,
+                    avecRoulettes: avecRoulettes
+                })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                // Rediriger vers la page de paiement Stripe
+                window.location.href = data.redirectUrl;
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
     </script>
 </body>
 </html>
+
 
 
