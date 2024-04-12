@@ -33,6 +33,15 @@ app.post('/create-checkout-session', async (req, res) => {
             mode: 'payment',
             success_url: 'https://a-scoria.fr/success-payement', // URL de redirection après un paiement réussi
             cancel_url: 'https://a-scoria.fr/cancel-payement', // URL de redirection après l'annulation du paiement
+            metadata: { // Ajoutez les métadonnées ici
+                longueur: req.body.longueur,
+                largeur: req.body.largeur,
+                hauteur: req.body.hauteur,
+                quantity: req.body.quantity,
+                avecPieds: req.body.avecPieds,
+                avecRoulettes: req.body.avecRoulettes,
+                // Ajoutez d'autres informations ici si nécessaire
+            },
             shipping_address_collection: {
                 allowed_countries: ['FR'], // Définissez les pays autorisés pour l'adresse de livraison
             },
@@ -53,3 +62,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
