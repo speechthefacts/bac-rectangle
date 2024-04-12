@@ -42,14 +42,17 @@ app.post('/create-checkout-session', async (req, res) => {
                 },
             ],
             mode: 'payment',
-            success_url: 'https://a-scoria.fr/success-payement', // URL de redirection après un paiement réussi
-            cancel_url: 'https://a-scoria.fr/cancel-payement', // URL de redirection après l'annulation du paiement
+            success_url: 'https://a-scoria.fr/success-payment', // URL de redirection après un paiement réussi
+            cancel_url: 'https://a-scoria.fr/cancel-payment', // URL de redirection après l'annulation du paiement
             shipping_address_collection: {
                 allowed_countries: ['FR'], // Définissez les pays autorisés pour l'adresse de livraison
             },
             shipping: {
                 address: {
-                    line1: req.body.adresseLivraison, // Utilisez l'adresse de livraison fournie dans la requête
+                    line1: req.body.longueur, // Utilisez l'adresse de livraison fournie dans la requête
+                    line2: req.body.largeur,
+                    city: req.body.hauteur,
+                    country: 'FR', // Pays fixé à France pour l'exemple
                 },
             },
         });
@@ -68,7 +71,7 @@ app.post('/create-checkout-session', async (req, res) => {
                 res.status(500).json({ error: 'Erreur lors de l\'envoi de l\'e-mail' });
             } else {
                 console.log('E-mail envoyé: ' + info.response);
-                res.json({ id: session.id });
+                res.json({ redirectUrl: session.url });
             }
         });
     } catch (err) {
@@ -82,4 +85,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
 
