@@ -148,11 +148,43 @@
         });
 
         document.getElementById('checkout-button').addEventListener('click', function() {
-            createCheckoutSession();
+            var longueur = document.getElementById('longueur').value;
+            var largeur = document.getElementById('largeur').value;
+            var hauteur = document.getElementById('hauteur').value;
+            var quantity = document.getElementById('quantity').value;
+            var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim());
+            var avecPieds = document.getElementById('avecPieds').checked;
+            var avecRoulettes = document.getElementById('avecRoulettes').checked;
+
+            fetch('/send-email.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    longueur: longueur,
+                    largeur: largeur,
+                    hauteur: hauteur,
+                    quantity: quantity,
+                    montant: montant,
+                    avecPieds: avecPieds,
+                    avecRoulettes: avecRoulettes
+                })
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    createCheckoutSession(montant);
+                } else {
+                    console.error('Erreur lors de l\'envoi de l\'e-mail.');
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
         });
 
-        function createCheckoutSession() {
-            var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim()) * 100;
+        function createCheckoutSession(montant) {
+            montant = montant * 100;
             fetch('/create-checkout-session', {
                 method: 'POST',
                 headers: {
@@ -180,5 +212,4 @@
     </script>
 </body>
 </html>
-
 
