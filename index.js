@@ -36,7 +36,7 @@ app.post('/create-checkout-session', async (req, res) => {
                         product_data: {
                             name: 'Bacs à fleurs rectangles/carrés',
                         },
-                        unit_amount: req.body.montant,
+                        unit_amount: Math.round(req.body.montant * 100), // Convertir le montant en centimes
                     },
                     quantity: 1,
                 },
@@ -77,4 +77,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
