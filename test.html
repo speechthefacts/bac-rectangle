@@ -71,7 +71,7 @@
         <label for="hauteur">Hauteur (mm) :</label>
         <input type="number" id="hauteur" min="200" max="1200" value="200">
         <label for="quantity">Quantité :</label>
-        <select id="quantity" class="quantity-option"></select>
+        <select id="quantity"></select>
         <label>
             <input type="checkbox" id="avecPieds" onclick="checkboxClicked(this)">
             Avec pieds 10 cm : + 10 euros TTC
@@ -80,18 +80,19 @@
             <input type="checkbox" id="avecRoulettes" onclick="checkboxClicked(this)">
             Avec roulettes : + 90 euros TTC
         </label>
-        <button id="calculate-button">Calculer Montant</button>
+        <button onclick="calculerMontant()">Calculer Montant</button>
         <div id="result"></div>
         <button id="checkout-button" style="display: none;">Payer maintenant</button>
     </div>
 
     <script>
+        // Initialisez Stripe avec votre clé publique
         var stripe = Stripe('pk_test_51OVBbFH0S2ts1MYetfq0WBHoT1IsqtvZyq89CxNLVnK1yDq2rwSbIxqqEcfQ37qoSNi4yKDC8tLHPttJXiRnkt2v004uFHTjW5');
 
         function generateQuantityOptions() {
             var quantitySelect = document.getElementById("quantity");
             quantitySelect.innerHTML = "";
-
+            
             for (var i = 1; i <= 100; i++) {
                 var option = document.createElement("option");
                 option.value = i;
@@ -100,21 +101,22 @@
             }
         }
 
-        window.addEventListener('load', function() {
-            generateQuantityOptions();
-        });
+        generateQuantityOptions();
 
         function calculerMontant() {
+            // Récupérer les valeurs des champs existants (longueur, largeur, hauteur, quantité)
             var longueur = parseFloat(document.getElementById('longueur').value) / 1000;
             var largeur = parseFloat(document.getElementById('largeur').value) / 1000;
             var hauteur = parseFloat(document.getElementById('hauteur').value) / 1000;
             var quantity = parseInt(document.getElementById('quantity').value);
 
+            // Vérifier si les dimensions sont dans les limites spécifiées
             if (longueur < 0.3 || longueur > 2 || largeur < 0.2 || largeur > 2 || hauteur < 0.2 || hauteur > 1.2) {
                 alert("Les dimensions doivent être comprises entre 300mm et 2000mm pour la longueur, entre 200mm et 2000mm pour la largeur, et entre 200mm et 1200mm pour la hauteur.");
                 return;
             }
 
+            // Calculer le montant en fonction des valeurs saisies
             var surface = (longueur * largeur) * 3 + (largeur * hauteur) * 2;
             var poids = surface * 16;
             var prix = poids * 13.8;
@@ -128,6 +130,7 @@
 
             document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
 
+            // Affichez le bouton de paiement si le montant est valide
             if (prix > 0) {
                 document.getElementById('checkout-button').style.display = 'block';
             } else {
@@ -143,50 +146,39 @@
             }
         }
 
-        document.getElementById('calculate-button').addEventListener('click', function() {
-            calculerMontant();
-        });
-
+        // Créez un gestionnaire d'événements pour le clic sur le bouton de paiement
         document.getElementById('checkout-button').addEventListener('click', function() {
-            createCheckoutSession();
-        });
+            // Récupérez le montant à payer
+            var montant = parseFloat(document.getElementById('result').innerText.split(':')[1].trim()) * 100; // Convertir en centimes
 
-        function createCheckoutSession() {
-            var longueur = document.getElementById('longueur').value;
-            var largeur = document.getElementById('largeur').value;
-            var hauteur = document.getElementById('hauteur').value;
-            var quantity = document.getElementById('quantity').value;
-            var montantElement = document.getElementById('result').innerText.split(':')[1];
-            var montant = montantElement ? parseFloat(montantElement.trim()) : 0;
-            var avecPieds = document.getElementById('avecPieds').checked;
-            var avecRoulettes = document.getElementById('avecRoulettes').checked;
-
+            // Créez une session de paiement avec Stripe
             fetch('/create-checkout-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    montant: montant,
-                    longueur: longueur,
-                    largeur: largeur,
-                    hauteur: hauteur,
-                    quantity: quantity,
-                    avecPieds: avecPieds,
-                    avecRoulettes: avecRoulettes
+                    montant: montant
                 })
             })
             .then(function(response) {
                 return response.json();
             })
-            .then(function(data) {
-                // Rediriger vers la page de paiement Stripe
-                window.location.href = data.redirectUrl;
+            .then(function(session) {
+                // Redirigez l'utilisateur vers la page de paiement Stripe
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function(result) {
+                // Gérez la réponse de Stripe après le paiement
+                if (result.error) {
+                    console.error(result.error.message);
+                    // Afficher un message d'erreur à l'utilisateur en cas d'échec du paiement
+                }
             })
             .catch(function(error) {
                 console.error('Error:', error);
             });
-        }
+        });
     </script>
 </body>
 </html>
