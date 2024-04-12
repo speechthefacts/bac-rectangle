@@ -47,14 +47,6 @@ app.post('/create-checkout-session', async (req, res) => {
             shipping_address_collection: {
                 allowed_countries: ['FR'], // Définissez les pays autorisés pour l'adresse de livraison
             },
-            shipping: {
-                address: {
-                    line1: 'Adresse ligne 1', // Remplacez par l'adresse de livraison réelle
-                    line2: 'Adresse ligne 2', // Remplacez par l'adresse de livraison réelle
-                    city: 'Ville', // Remplacez par la ville de livraison réelle
-                    country: 'FR', // Pays fixé à France pour l'exemple
-                },
-            },
         });
 
         // Logique pour envoyer un e-mail
