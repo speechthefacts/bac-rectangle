@@ -49,9 +49,9 @@ app.post('/create-checkout-session', async (req, res) => {
             },
             shipping: {
                 address: {
-                    line1: req.body.longueur, // Utilisez l'adresse de livraison fournie dans la requête
-                    line2: req.body.largeur,
-                    city: req.body.hauteur,
+                    line1: 'Adresse ligne 1', // Remplacez par l'adresse de livraison réelle
+                    line2: 'Adresse ligne 2', // Remplacez par l'adresse de livraison réelle
+                    city: 'Ville', // Remplacez par la ville de livraison réelle
                     country: 'FR', // Pays fixé à France pour l'exemple
                 },
             },
@@ -85,5 +85,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
 
