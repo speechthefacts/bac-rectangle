@@ -156,34 +156,10 @@
             var avecPieds = document.getElementById('avecPieds').checked;
             var avecRoulettes = document.getElementById('avecRoulettes').checked;
 
-            fetch('/sed.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    longueur: longueur,
-                    largeur: largeur,
-                    hauteur: hauteur,
-                    quantity: quantity,
-                    montant: montant,
-                    avecPieds: avecPieds,
-                    avecRoulettes: avecRoulettes
-                })
-            })
-            .then(function(response) {
-                if (response.ok) {
-                    createCheckoutSession(montant);
-                } else {
-                    console.error('Erreur lors de l\'envoi de l\'e-mail.');
-                }
-            })
-            .catch(function(error) {
-                console.error('Error:', error);
-            });
+            createCheckoutSession(montant, longueur, largeur, hauteur, quantity, avecPieds, avecRoulettes);
         });
 
-        function createCheckoutSession(montant) {
+        function createCheckoutSession(montant, longueur, largeur, hauteur, quantity, avecPieds, avecRoulettes) {
             montant = montant * 100;
             fetch('/create-checkout-session', {
                 method: 'POST',
@@ -191,7 +167,13 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    montant: montant
+                    montant: montant,
+                    longueur: longueur,
+                    largeur: largeur,
+                    hauteur: hauteur,
+                    quantity: quantity,
+                    avecPieds: avecPieds,
+                    avecRoulettes: avecRoulettes
                 })
             })
             .then(function(response) {
