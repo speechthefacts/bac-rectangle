@@ -162,10 +162,11 @@
             var quantity = parseInt(document.getElementById('quantity').value);
 
             // Vérifier si les dimensions sont dans les limites spécifiées
-            if (longueur < 0.3 || longueur > 2 || largeur < 0.2 || largeur > 2 || hauteur < 0.2 || hauteur > 1.2) {
-                alert("Les dimensions doivent être comprises entre 300mm et 2000mm pour la longueur, entre 200mm et 2000mm pour la largeur, et entre 200mm et 1200mm pour la hauteur.");
-                return;
-            }
+            if (longueur < 30 || longueur > 200 || largeur < 20 || largeur > 200 || hauteur < 20 || hauteur > 120) {
+              alert("Les dimensions doivent être comprises entre 30cm et 200cm pour la longueur, entre 20cm et 200cm pour la largeur, et entre 20cm et 120cm pour la hauteur.");
+            return;
+        }
+
 
             // Calculer le montant en fonction des valeurs saisies
             var surface = (longueur * largeur) * 3 + (largeur * hauteur) * 2;
