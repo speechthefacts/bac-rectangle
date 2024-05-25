@@ -96,16 +96,21 @@
 
         function calculerMontant() {
             // Récupérer les valeurs des champs existants (longueur, largeur, hauteur, quantité)
-            var longueur = parseFloat(document.getElementById('longueur').value) / 100;
-            var largeur = parseFloat(document.getElementById('largeur').value) / 100;
-            var hauteur = parseFloat(document.getElementById('hauteur').value) / 100;
+            var longueur = parseFloat(document.getElementById('longueur').value);
+            var largeur = parseFloat(document.getElementById('largeur').value);
+            var hauteur = parseFloat(document.getElementById('hauteur').value);
             var quantity = parseInt(document.getElementById('quantity').value);
 
             // Vérifier si les dimensions sont dans les limites spécifiées
-            if (longueur < 0.3 || longueur > 2 || largeur < 0.2 || largeur > 2 || hauteur < 0.2 || hauteur > 1.2) {
+            if (longueur < 30 || longueur > 200 || largeur < 20 || largeur > 200 || hauteur < 20 || hauteur > 120) {
                 alert("Les dimensions doivent être comprises entre 30cm et 200cm pour la longueur, entre 20cm et 200cm pour la largeur, et entre 20cm et 120cm pour la hauteur.");
                 return;
             }
+
+            // Convertir les dimensions en mètres pour les calculs
+            longueur /= 100;
+            largeur /= 100;
+            hauteur /= 100;
 
             // Calculer le montant en fonction des valeurs saisies
             var surface = (longueur * largeur) * 3 + (largeur * hauteur) * 2;
