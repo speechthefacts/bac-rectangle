@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement avec Stripe</title>
-    <script src="https://js.stripe.com/v3/"></script>
+    <title>Testez notre configurateur</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,21 +54,17 @@
             border-radius: 4px;
             background-color: #fff;
         }
-        #checkout-button {
-            display: none; /* Masquer initialement le bouton de paiement */
-            margin-top: 20px; /* Ajout d'une marge en haut pour l'espacement */
-        }
     </style>
 </head>
 <body>
     <div id="pricing-form">
-        <h1>Bacs à fleurs rectangles/carrés</h1>
-        <label for="longueur">Longueur (mm) :</label>
-        <input type="number" id="longueur" min="300" max="2000" value="1000">
-        <label for="largeur">Largeur (mm) :</label>
-        <input type="number" id="largeur" min="200" max="2000" value="500">
-        <label for="hauteur">Hauteur (mm) :</label>
-        <input type="number" id="hauteur" min="200" max="1200" value="200">
+        <h1>Testez notre configurateur</h1>
+        <label for="longueur">Longueur (cm) :</label>
+        <input type="number" id="longueur" min="30" max="200" value="100">
+        <label for="largeur">Largeur (cm) :</label>
+        <input type="number" id="largeur" min="20" max="200" value="50">
+        <label for="hauteur">Hauteur (cm) :</label>
+        <input type="number" id="hauteur" min="20" max="120" value="20">
         <label for="quantity">Quantité :</label>
         <select id="quantity"></select>
         <label>
@@ -82,9 +77,60 @@
         </label>
         <button onclick="calculerMontant()">Calculer Montant</button>
         <div id="result"></div>
-        <button id="checkout-button" style="display: none;">Payer maintenant</button>
     </div>
 
+    <script>
+        function generateQuantityOptions() {
+            var quantitySelect = document.getElementById("quantity");
+            quantitySelect.innerHTML = "";
+            
+            for (var i = 1; i <= 100; i++) {
+                var option = document.createElement("option");
+                option.value = i;
+                option.textContent = i;
+                quantitySelect.appendChild(option);
+            }
+        }
+
+        generateQuantityOptions();
+
+        function calculerMontant() {
+            // Récupérer les valeurs des champs existants (longueur, largeur, hauteur, quantité)
+            var longueur = parseFloat(document.getElementById('longueur').value) / 100;
+            var largeur = parseFloat(document.getElementById('largeur').value) / 100;
+            var hauteur = parseFloat(document.getElementById('hauteur').value) / 100;
+            var quantity = parseInt(document.getElementById('quantity').value);
+
+            // Vérifier si les dimensions sont dans les limites spécifiées
+            if (longueur < 0.3 || longueur > 2 || largeur < 0.2 || largeur > 2 || hauteur < 0.2 || hauteur > 1.2) {
+                alert("Les dimensions doivent être comprises entre 30cm et 200cm pour la longueur, entre 20cm et 200cm pour la largeur, et entre 20cm et 120cm pour la hauteur.");
+                return;
+            }
+
+            // Calculer le montant en fonction des valeurs saisies
+            var surface = (longueur * largeur) * 3 + (largeur * hauteur) * 2;
+            var poids = surface * 16;
+            var prix = poids * 13.8;
+
+            if (document.getElementById('avecPieds').checked) {
+                prix += 10 * quantity;
+            }
+            if (document.getElementById('avecRoulettes').checked) {
+                prix += 90 * quantity;
+            }
+
+            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
+        }
+
+        function checkboxClicked(clickedCheckbox) {
+            if (clickedCheckbox.id === 'avecPieds' && clickedCheckbox.checked) {
+                document.getElementById('avecRoulettes').checked = false;
+            } else if (clickedCheckbox.id === 'avecRoulettes' && clickedCheckbox.checked) {
+                document.getElementById('avecPieds').checked = false;
+            }
+        }
+    </script>
+  
     <script>
         // Initialisez Stripe avec votre clé publique
         var stripe = Stripe('pk_test_51OVBbFH0S2ts1MYetfq0WBHoT1IsqtvZyq89CxNLVnK1yDq2rwSbIxqqEcfQ37qoSNi4yKDC8tLHPttJXiRnkt2v004uFHTjW5');
