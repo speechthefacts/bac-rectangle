@@ -121,6 +121,11 @@
         var hauteur = parseFloat(document.getElementById('hauteur').value);
         var quantity = parseInt(document.getElementById('quantity').value);
 
+        if (isNaN(longueur) || isNaN(largeur) || isNaN(hauteur) || isNaN(quantity)) {
+          alert("Veuillez entrer des valeurs valides.");
+          return;
+        }
+
         if (longueur < 30 || longueur > 200 || largeur < 20 || largeur > 200 || hauteur < 20 || hauteur > 120) {
           alert("Les dimensions doivent être comprises entre 30cm et 200cm pour la longueur, entre 20cm et 200cm pour la largeur, et entre 20cm et 120cm pour la hauteur.");
           return;
@@ -210,4 +215,5 @@
     </script>
   </body>
 </html>
+
 
