@@ -75,12 +75,22 @@
             <input type="checkbox" id="avecRoulettes" onclick="checkboxClicked(this)">
             Avec roulettes : + 90 euros TTC
         </label>
+        <label>
+            <input type="checkbox" id="livraison">
+            Livraison à domicile : + 100 euros TTC
+        </label>
+        <label>
+            <input type="checkbox" id="retraitatelier" onclick="checkboxClicked(this)">
+            Retrait à l'atelier : Gratuit
+        </label>
+
         <button onclick="calculerMontant()">Calculer Montant</button>
         <div id="result"></div>
         <button id="checkout-button" style="display:none;">Payer</button>
     </div>
 
     <script>
+
         // Initialisez Stripe avec votre clé publique
         var stripe = Stripe('pk_test_51OVBbFH0S2ts1MYetfq0WBHoT1IsqtvZyq89CxNLVnK1yDq2rwSbIxqqEcfQ37qoSNi4yKDC8tLHPttJXiRnkt2v004uFHTjW5');
 
@@ -100,13 +110,13 @@
 
         function calculerMontant() {
             // Récupérer les valeurs des champs existants (longueur, largeur, hauteur, quantité)
-            var longueur = parseFloat(document.getElementById('longueur').value);
-            var largeur = parseFloat(document.getElementById('largeur').value);
-            var hauteur = parseFloat(document.getElementById('hauteur').value);
+            var longueur = parseFloat(document.getElementById('longueur').value) / 100;
+            var largeur = parseFloat(document.getElementById('largeur').value) / 100;
+            var hauteur = parseFloat(document.getElementById('hauteur').value) / 100;
             var quantity = parseInt(document.getElementById('quantity').value);
 
             // Vérifier si les dimensions sont dans les limites spécifiées
-            if (longueur < 30 || longueur > 200 || largeur < 20 || largeur > 200 || hauteur < 20 || hauteur > 120) {
+            if (longueur < 0.3 || longueur > 2 || largeur < 0.2 || largeur > 2 || hauteur < 0.2 || hauteur > 1.2) {
                 alert("Les dimensions doivent être comprises entre 30cm et 200cm pour la longueur, entre 20cm et 200cm pour la largeur, et entre 20cm et 120cm pour la hauteur.");
                 return;
             }
@@ -128,8 +138,15 @@
                 prix += 90 * quantity;
             }
 
-            var montantTotal = prix * quantity;
-            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + montantTotal.toFixed(2) + " euros";
+            var totalPrix = prix * quantity;
+
+            // Ajouter le coût fixe de la livraison si l'option est cochée
+            if (document.getElementById('livraison').checked) {
+                totalPrix += 100; // Prix fixe pour la livraison
+            }
+
+            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + totalPrix.toFixed(2) + " euros";
+        }
 
             // Affichez le bouton de paiement si le montant est valide
             if (montantTotal > 0) {
@@ -140,12 +157,21 @@
         }
 
         function checkboxClicked(clickedCheckbox) {
-            if (clickedCheckbox.id === 'avecPieds' && clickedCheckbox.checked) {
-                document.getElementById('avecRoulettes').checked = false;
-            } else if (clickedCheckbox.id === 'avecRoulettes' && clickedCheckbox.checked) {
-                document.getElementById('avecPieds').checked = false;
-            }
+    if (clickedCheckbox.id === 'avecPieds' && clickedCheckbox.checked) {
+        document.getElementById('avecRoulettes').checked = false;
+    } else if (clickedCheckbox.id === 'avecRoulettes' && clickedCheckbox.checked) {
+        document.getElementById('avecPieds').checked = false;
+    }
+
+    if (clickedCheckbox.id === 'livraison' && clickedCheckbox.checked) {
+        if (document.getElementById('retraitatelier').checked) {
+            document.getElementById('retraitatelier').checked = false;
         }
+    } else if (clickedCheckbox.id === 'retraitatelier' && clickedCheckbox.checked) {
+        if (document.getElementById('livraison').checked) {
+            document.getElementById('livraison').checked = false;
+        }
+    }
 
         // Créez un gestionnaire d'événements pour le clic sur le bouton de paiement
         document.getElementById('checkout-button').addEventListener('click', function() {
@@ -189,4 +215,3 @@
     </script>
 </body>
 </html>
-
