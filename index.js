@@ -40,6 +40,8 @@ app.post('/create-checkout-session', async (req, res) => {
                 quantity: req.body.quantity,
                 avecPieds: req.body.avecPieds,
                 avecRoulettes: req.body.avecRoulettes,
+                livraisonDomicile : req.body.livraisonDomicile,
+                retraitAtelier : req.body.retraitAtelier,
                 // Ajoutez d'autres informations ici si nécessaire
             },
             shipping_address_collection: {
