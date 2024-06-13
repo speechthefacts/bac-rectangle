@@ -136,14 +136,16 @@
                 prix += 90 * quantity;
             }
 
+            var montantTotal = prix * quantity;
+
             if (document.getElementById('livraisonDomicile').checked) {
-                prix += 100;
+                montantTotal += 100;
             }
 
-            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + (prix * quantity).toFixed(2) + " euros";
+            document.getElementById('result').innerHTML = "<strong>Montant à payer :</strong> " + montantTotal.toFixed(2) + " euros";
 
             // Affichez le bouton de paiement si le montant est valide
-            if (prix > 0) {
+            if (montantTotal > 0) {
                 document.getElementById('checkout-button').style.display = 'block';
             } else {
                 document.getElementById('checkout-button').style.display = 'none';
